@@ -14,7 +14,7 @@ In this concrete implementation, it reads data from the DB (see data/database.sq
 
 4. Copy `config.example.js` into `config.js` and configure it
 
-   1. SUBSCRIBERS - list of URLs to subscribe to
+   1. SUBSCRIBERS - list of URLs to send data to
     
    2. SUBSTATIONS - list of substations with following params
     
