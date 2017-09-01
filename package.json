@@ -1,0 +1,15 @@
+{
+  "name": "http-data-emitter",
+  "version": "1.0.0",
+  "description": "Continually sends JSON data to subscribers",
+  "main": "DataEmitter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dejan Stosic",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "github:mysqljs/mysql",
+    "request": "^2.81.0"
+  }
+}
