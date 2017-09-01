@@ -24,6 +24,7 @@ In this concrete implementation, it reads data from the DB (see data/database.sq
     
     - **chanceToSkip** - chance between 0.00 and 1.00 to skip sending in a given iteration
     
+5. Start with `$ node DataEmitter.js`
     
 ##### INFO
 
