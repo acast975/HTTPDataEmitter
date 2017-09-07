@@ -7,3 +7,5 @@ eventPipe.on("newData", function (res) {
 });
 
 DBReader.startReading();
+
+console.log("Started at " + new Date().toISOString());

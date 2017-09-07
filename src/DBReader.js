@@ -28,19 +28,20 @@ var reader = {
                 if (err) throw err;
 
                 if (!context.shouldSkip(substation.chanceToSkip)) {
-                    res = context.transformRow(res[0]);
-                    //console.log(res.ID, res.LOCATION_ID, res.READ_TIME);
-
-                    //fire event with read data
-                    eventPipe.emit("newData", res);
-                    //increment primary key
-                    substation.currentID = res.ID + 1;
-                    //call the function once again
+                    if (res[0]) {
+                        res = context.transformRow(res[0]);
+                        //fire event with read data
+                        eventPipe.emit("newData", res);
+                        //increment primary key
+                        substation.currentID = res.ID + 1;
+                    } else {
+                        substation.currentID = 0; //restart the ID, we run out of data
+                    }
                 }
+                //call the function once again
                 setTimeout(context.loop, substation.frequency*1000, substation, context);
             });
     },
-
 
     /**
      * Sets a current datetime (overwrites the one from the DB);
@@ -48,7 +49,7 @@ var reader = {
      * @param row
      */
     transformRow : function (row) {
-        row.READ_TIME = new Date().toISOString();
+        row.READ_TIME = new Date().getTime();
         return row;
     },
 
