@@ -11,7 +11,6 @@ var reader = {
         this.substations.forEach(function (sub, i) {
             this.substations[i].currentID = 0;
         }, this);
-        DB.connect();
 
         //initialize loop for each substation
         this.substations.forEach(function (substation) {
@@ -20,27 +19,36 @@ var reader = {
     },
 
     loop: function (substation, context) {
-        DB.query('SELECT * FROM DATA_HISTORY ' +
-            'WHERE `ID` >= '+ substation.currentID +
-            ' AND `LOCATION_ID` = '+substation.id+'' +
-            ' ORDER BY ID ASC LIMIT 1',
-            function (err, res, fields) {
-                if (err) throw err;
+        DB.getConnection(function(err, conn) {
+            if (err) {
+                console.log(err);
+                callback(true);
+                return;
+            }
 
-                if (!context.shouldSkip(substation.chanceToSkip)) {
-                    if (res[0]) {
-                        res = context.transformRow(res[0]);
-                        //fire event with read data
-                        eventPipe.emit("newData", res);
-                        //increment primary key
-                        substation.currentID = res.ID + 1;
-                    } else {
-                        substation.currentID = 0; //restart the ID, we run out of data
+            conn.query('SELECT * FROM DATA_HISTORY ' +
+                'WHERE `ID` >= '+ substation.currentID +
+                ' AND `LOCATION_ID` = '+substation.id+'' +
+                ' ORDER BY ID ASC LIMIT 1',
+                function (err, res, fields) {
+                    if (err) throw err;
+
+                    if (!context.shouldSkip(substation.chanceToSkip)) {
+                        if (res[0]) {
+                            res = context.transformRow(res[0]);
+                            //fire event with read data
+                            eventPipe.emit("newData", res);
+                            //increment primary key
+                            substation.currentID = res.ID + 1;
+                        } else {
+                            substation.currentID = 0; //restart the ID, we run out of data
+                        }
                     }
-                }
-                //call the function once again
-                setTimeout(context.loop, substation.frequency*1000, substation, context);
-            });
+                    //call the function once again
+                    setTimeout(context.loop, substation.frequency*1000, substation, context);
+                });
+
+        });
     },
 
     /**

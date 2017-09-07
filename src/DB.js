@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var config = require('../config');
 
-var DB = mysql.createConnection({
+var DB = mysql.createPool({
     host     : config.DB_HOST,
     user     : config.DB_USER,
     password : config.DB_PASS,
