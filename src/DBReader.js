@@ -32,7 +32,7 @@ var reader = {
                 ' ORDER BY ID ASC LIMIT 1',
                 function (err, res, fields) {
                     if (err) throw err;
-
+                    conn.release();
                     if (!context.shouldSkip(substation.chanceToSkip)) {
                         if (res[0]) {
                             res = context.transformRow(res[0]);
